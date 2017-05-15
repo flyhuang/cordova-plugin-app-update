@@ -8,7 +8,7 @@
 # cordova-plugin-app-update
 App updater for Cordova/PhoneGap
 
-# Demo 
+# Demo
 Try it yourself:
 
 Just clone and install this demo.
@@ -17,11 +17,11 @@ Just clone and install this demo.
 
  * 如果喜欢它，请别忘了给我一颗鼓励的星
  * Support me a `Star` if it is necessary.  :+1:
- 
+
 # Preview
 ![enter image description here](https://raw.githubusercontent.com/vaenow/cordova-plugin-app-update/master/res/img/Screenshot_2015-10-31-13-42-13.jpg)
 
-# 
+#
 
 ![enter image description here](https://raw.githubusercontent.com/vaenow/cordova-plugin-app-update/master/res/img/Screenshot_2015-10-31-13-42-19.jpg)
 
@@ -39,7 +39,7 @@ window.AppUpdate.checkAppUpdate(onSuccess, onFail, updateUrl);
  - Verbose
 ```js
 var appUpdate = cordova.require('cordova-plugin-app-update.AppUpdate');
-var updateUrl = "http://192.168.0.1/version.xml";
+var updateUrl = "http://192.168.0.1/version.json";
 appUpdate.checkAppUpdate(onSuccess, onFail, updateUrl);
 ```
 
@@ -56,19 +56,19 @@ console.log(versionCode)  // 302048
 
 versionName | versionCode
 ------- | ----------------
-0.0.1  | 18
+0.0.1  | 12
 0.3.4  | 3048  
 3.2.4   | 302048
 12.234.221  | 1436218
 
-### server version.xml file
- 
-```xml
-<update>
-    <version>302048</version>
-    <name>name</name>
-    <url>http://192.168.0.1/android.apk</url>
-</update>
+### server version.json file
+
+```json
+{
+   "name": "app update",
+   "version": "3048",
+   "url": "https://download.server.com/android.apk"
+}
 ```
 
 ### `checkAppUpdate` code
@@ -115,4 +115,7 @@ MIT
 
 * Please let me know if you have any questions.
 
-
+#TODO
+1. 抽离出Update方法
+2. 优化页面样式
+3. 支持JSON和XML两种方式
