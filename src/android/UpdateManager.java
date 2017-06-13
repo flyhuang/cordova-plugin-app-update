@@ -133,12 +133,14 @@ public class UpdateManager {
      */
     private void compareVersions() {
         Version version = queue.get(0);
-        int versionCodeLocal = version.getLocal();
-        int versionCodeRemote = version.getRemote();
+//        int versionCodeLocal = version.getLocal();
+//        int versionCodeRemote = version.getRemote();
+        String localName = version.getLocalName();
+        String remoteName = version.getRemoteNmae();
 
         //比对版本号
         //检查软件是否有更新版本
-        if (versionCodeLocal < versionCodeRemote) {
+        if (compareVersion(localName, remoteName)) {
             if (isDownloading) {
                 msgBox.showDownloadDialog(null, null, null);
                 mHandler.sendEmptyMessage(Constants.VERSION_UPDATING);
@@ -152,6 +154,29 @@ public class UpdateManager {
             mHandler.sendEmptyMessage(Constants.VERSION_UP_TO_UPDATE);
             // Do not show Toast
             //Toast.makeText(mContext, getString("update_latest"), Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    private boolean compareVersion(String localVersion, String remoteVersion) {
+        String[] localList = localVersion.split("\\.");
+        Integer major = Integer.valueOf(localList[0]);
+        Integer minor = Integer.valueOf(localList[1]);
+        Integer patch = Integer.valueOf(localList[2]);
+
+        String[] remoteList = remoteVersion.split("\\.");
+        Integer majorRemote = Integer.valueOf(remoteList[0]);
+        Integer minorRemote = Integer.valueOf(remoteList[1]);
+        Integer patchRemote = Integer.valueOf(remoteList[2]);
+
+        if (major < majorRemote) {
+            return true;
+        } else if (minor < minorRemote) {
+            return true;
+        } else if (patch < patchRemote) {
+            return true;
+        } else {
+            return false;
         }
     }
 

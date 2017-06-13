@@ -45,17 +45,29 @@ public class CheckUpdateThread implements Runnable {
 
     @Override
     public void run() {
-        int versionCodeLocal = getVersionCodeLocal(mContext); // 获取当前软件版本
-        int versionCodeRemote = getVersionCodeRemote();  //获取服务器当前软件版本
+        String versionNameLocal = getVersionNameLocal(mContext);
+        String versionNameRemote = getVersionNameRemote();
 
-        queue.clear(); //ensure the queue is empty
-        queue.add(new Version(versionCodeLocal, versionCodeRemote));
+        queue.clear();
+        queue.add(new Version(versionNameLocal, versionNameRemote));
 
-        if (versionCodeLocal == 0 || versionCodeRemote == 0) {
+        if ("0".equals(versionNameLocal) || "0".equals(versionNameRemote)) {
             mHandler.sendEmptyMessage(Constants.VERSION_RESOLVE_FAIL);
         } else {
             mHandler.sendEmptyMessage(Constants.VERSION_COMPARE_START);
         }
+
+        //int versionCodeLocal = getVersionCodeLocal(mContext); // 获取当前软件版本
+        //int versionCodeRemote = getVersionCodeRemote();  //获取服务器当前软件版本
+
+        // queue.clear(); //ensure the queue is empty
+        // queue.add(new Version(versionCodeLocal, versionCodeRemote));
+
+        // if (versionCodeLocal == 0 || versionCodeRemote == 0) {
+        //     mHandler.sendEmptyMessage(Constants.VERSION_RESOLVE_FAIL);
+        // } else {
+        //     mHandler.sendEmptyMessage(Constants.VERSION_COMPARE_START);
+        // }
     }
 
     /**
@@ -115,6 +127,17 @@ public class CheckUpdateThread implements Runnable {
         return versionCode;
     }
 
+    private String getVersionNameLocal(Context context) {
+        LOG.d(TAG, "get version name..");
+        String versionName = "0";
+        try {
+            versionName = context.context.getPackageManager().getPackageInfo(packageName, 0).versionName
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
+    }
+
     /**
      * 获取服务器软件版本号
      *
@@ -125,15 +148,15 @@ public class CheckUpdateThread implements Runnable {
         InputStream is = returnFileIS(updateXmlUrl);
         // 不使用xml 方式解析
         // 解析XML文件。 由于XML文件比较小，因此使用DOM方式进行解析
-  //        ParseXmlService service = new ParseXmlService();
-  //        try {
-  //            setMHashMap(service.parseXml(is));
-  //        } catch (Exception e) {
-  //            e.printStackTrace();
-  //        }
-  //        if (null != getMHashMap()) {
-  //            versionCodeRemote = Integer.valueOf(getMHashMap().get("version"));
-  //        }
+        //        ParseXmlService service = new ParseXmlService();
+        //        try {
+        //            setMHashMap(service.parseXml(is));
+        //        } catch (Exception e) {
+        //            e.printStackTrace();
+        //        }
+        //        if (null != getMHashMap()) {
+        //            versionCodeRemote = Integer.valueOf(getMHashMap().get("version"));
+        //        }
         // 使用json方式
         ParseJsonService parseJsonService = new ParseJsonService();
         try {
@@ -146,5 +169,22 @@ public class CheckUpdateThread implements Runnable {
         }
 
         return versionCodeRemote;
+    }
+
+
+    private String getVersionNameRemote() {
+        String versionNameRemote = "0";
+        InputStream is = returnFileIS(updateXmlUrl);
+        ParseJsonService parseJsonService = new ParseJsonService();
+        try {
+            setMHashMap(parseJsonService.parseJson(is));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (null != getMHashMap()) {
+            versionNameRemote = getMHashMap().get("version");
+        }
+
+        return versionNameRemote;
     }
 }
