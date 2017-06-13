@@ -131,11 +131,11 @@ public class CheckUpdateThread implements Runnable {
         LOG.d(TAG, "get version name..");
         String versionName = "0";
         try {
-            versionName = context.context.getPackageManager().getPackageInfo(packageName, 0).versionName;
+            versionName = context.getPackageManager().getPackageInfo(packageName, 0).versionName;
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
-        return versionCode;
+        return versionName;
     }
 
     /**
